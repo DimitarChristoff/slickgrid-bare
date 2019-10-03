@@ -1,29 +1,10 @@
-const path                = require('path');
-const webpack             = require('webpack');
-const CopyWebpackPlugin   = require('copy-webpack-plugin');
-const nodeExternals       = require('webpack-node-externals');
+const path = require('path');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
-const __OUTPUT__          = path.join(__dirname, '..', 'dist');
-const __INPUT__           = path.join(__dirname, '..', 'src');
-const __IMAGES__          = path.join(__dirname, '..', 'images');
-const __PLUGINS__         = path.join(__dirname, '..', 'plugins');
-const __COMPONENT_NAME__  = 'slickgrid';
-
-const imgquery = JSON.stringify({
-  mozjpeg: {
-    progressive: true,
-  },
-  gifsicle: {
-    interlaced: false,
-  },
-  optipng: {
-    optimizationLevel: 4,
-  },
-  pngquant: {
-    quality: '75-90',
-    speed: 3,
-  }
-})
+const __OUTPUT__ = path.join(__dirname, '..', 'dist');
+const __INPUT__ = path.join(__dirname, '..', 'src');
 
 module.exports = {
 
@@ -40,7 +21,7 @@ module.exports = {
   output: {
     path: __OUTPUT__,
     publicPath: '/',
-    filename: `slick.es6.min.js`,
+    filename: `slick.min.js`,
     libraryTarget: 'commonjs'
   },
 
@@ -57,12 +38,6 @@ module.exports = {
     }, {
       test: /\.(scss|css)$/,
       loader: 'style-loader!css-loader!scss-loader'
-    }, {
-      test: /\.(jpe?g|png|gif|svg)$/i,
-      loaders: [
-        `file?context=${__IMAGES__}&hash=sha512&digest=hex&name=[hash].[ext]`,
-        `image-webpack?${imgquery}`
-      ]
     }]
   },
 
@@ -88,10 +63,6 @@ module.exports = {
       {
         flatten: true,
         from: `${__INPUT__}/*.scss`
-      },
-      {
-        from: `${__PLUGINS__}/**/*.css`,
-        flatten: true
       }
     ])
   ],

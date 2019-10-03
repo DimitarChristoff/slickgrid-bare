@@ -1224,7 +1224,7 @@ function SlickGrid(container, data, columns, options){
         onmove: event => {
           x += event.dx;
           event.target.style.transform = `translate3d(${x}px, -3px, 100px)`;
-          // event.target.style.marginLeft = x + 'px';
+          event.target.style.zIndex = 1000;
         },
 
         onend: event => {

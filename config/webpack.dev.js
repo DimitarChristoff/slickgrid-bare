@@ -1,25 +1,7 @@
-const path          = require('path');
-const webpack       = require('webpack');
-const pkg           = require('../package.json');
+const path = require('path');
+const webpack = require('webpack');
 
 const __DEV_INPUT__ = path.join(__dirname, '..', 'examples');
-const __IMAGES__    = path.join(__dirname, '..', 'images');
-
-const imgquery      = JSON.stringify({
-  mozjpeg: {
-    progressive: true,
-  },
-  gifsicle: {
-    interlaced: false,
-  },
-  optipng: {
-    optimizationLevel: 4,
-  },
-  pngquant: {
-    quality: '75-90',
-    speed: 3,
-  }
-})
 
 module.exports = {
 
