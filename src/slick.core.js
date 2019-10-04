@@ -84,7 +84,7 @@ function EventData() {
    */
   this.isImmediatePropagationStopped = function() {
     return isImmediatePropagationStopped;
-  }
+  };
 }
 
 /***
@@ -137,7 +137,12 @@ function Event() {
     scope = scope || this;
 
     var returnValue;
-    for (var i = 0; i < handlers.length && !(e.isPropagationStopped() || e.isImmediatePropagationStopped()); i++) {
+    for (
+      var i = 0;
+      i < handlers.length &&
+      !(e.isPropagationStopped() || e.isImmediatePropagationStopped());
+      i++
+    ) {
       returnValue = handlers[i].call(scope, e, args);
     }
 
@@ -179,7 +184,7 @@ function EventHandler() {
     handlers = [];
 
     return this; // allow chaining
-  }
+  };
 }
 
 /***
@@ -247,7 +252,12 @@ function Range(fromRow, fromCell, toRow, toCell) {
    * @return {Boolean}
    */
   this.contains = function(row, cell) {
-    return row >= this.fromRow && row <= this.toRow && cell >= this.fromCell && cell <= this.toCell;
+    return (
+      row >= this.fromRow &&
+      row <= this.toRow &&
+      cell >= this.fromCell &&
+      cell <= this.toCell
+    );
   };
 
   /***
@@ -257,13 +267,22 @@ function Range(fromRow, fromCell, toRow, toCell) {
    */
   this.toString = function() {
     if (this.isSingleCell()) {
-      return "(" + this.fromRow + ":" + this.fromCell + ")";
+      return '(' + this.fromRow + ':' + this.fromCell + ')';
     } else {
-      return "(" + this.fromRow + ":" + this.fromCell + " - " + this.toRow + ":" + this.toCell + ")";
+      return (
+        '(' +
+        this.fromRow +
+        ':' +
+        this.fromCell +
+        ' - ' +
+        this.toRow +
+        ':' +
+        this.toCell +
+        ')'
+      );
     }
-  }
+  };
 }
-
 
 /***
  * A base class that all special / non-data rows (like Group and GroupTotals) derive from.
@@ -273,7 +292,6 @@ function Range(fromRow, fromCell, toRow, toCell) {
 function NonDataItem() {
   this.__nonDataRow = true;
 }
-
 
 /***
  * Information about a group of rows.
@@ -358,7 +376,12 @@ Group.prototype = new NonDataItem();
  * @param group {Group} Group instance to compare to.
  */
 Group.prototype.equals = function(group) {
-  return this.value === group.value && this.count === group.count && this.collapsed === group.collapsed && this.title === group.title;
+  return (
+    this.value === group.value &&
+    this.count === group.count &&
+    this.collapsed === group.collapsed &&
+    this.title === group.title
+  );
 };
 
 /***
@@ -410,7 +433,9 @@ function EditorLock() {
    * @return {Boolean}
    */
   this.isActive = function(editController) {
-    return (editController ? activeEditController === editController : activeEditController !== null);
+    return editController
+      ? activeEditController === editController
+      : activeEditController !== null;
   };
 
   /***
@@ -420,17 +445,18 @@ function EditorLock() {
    * @param editController {EditController} edit controller acquiring the lock
    */
   this.activate = function(editController) {
-    if (editController === activeEditController) { // already activated?
+    if (editController === activeEditController) {
+      // already activated?
       return;
     }
     if (activeEditController !== null) {
       throw "SlickGrid.EditorLock.activate: an editController is still active, can't activate another editController";
     }
     if (!editController.commitCurrentEdit) {
-      throw "SlickGrid.EditorLock.activate: editController must implement .commitCurrentEdit()";
+      throw 'SlickGrid.EditorLock.activate: editController must implement .commitCurrentEdit()';
     }
     if (!editController.cancelCurrentEdit) {
-      throw "SlickGrid.EditorLock.activate: editController must implement .cancelCurrentEdit()";
+      throw 'SlickGrid.EditorLock.activate: editController must implement .cancelCurrentEdit()';
     }
     activeEditController = editController;
   };
@@ -443,7 +469,7 @@ function EditorLock() {
    */
   this.deactivate = function(editController) {
     if (activeEditController !== editController) {
-      throw "SlickGrid.EditorLock.deactivate: specified editController is not the currently active one";
+      throw 'SlickGrid.EditorLock.deactivate: specified editController is not the currently active one';
     }
     activeEditController = null;
   };
@@ -457,7 +483,9 @@ function EditorLock() {
    * @return {Boolean}
    */
   this.commitCurrentEdit = function() {
-    return (activeEditController ? activeEditController.commitCurrentEdit() : true);
+    return activeEditController
+      ? activeEditController.commitCurrentEdit()
+      : true;
   };
 
   /***
@@ -468,7 +496,9 @@ function EditorLock() {
    * @return {Boolean}
    */
   this.cancelCurrentEdit = function cancelCurrentEdit() {
-    return (activeEditController ? activeEditController.cancelCurrentEdit() : true);
+    return activeEditController
+      ? activeEditController.cancelCurrentEdit()
+      : true;
   };
 }
 
@@ -479,7 +509,6 @@ function EditorLock() {
  * @constructor
  */
 function TreeColumns(treeColumns) {
-
   var columnsById = {};
 
   function init() {
@@ -495,25 +524,24 @@ function TreeColumns(treeColumns) {
   }
 
   function filter(node, condition) {
-
     return node.filter(function(column) {
-
       var valid = condition.call(column);
 
-      if (valid && column.columns) column.columns = filter(column.columns, condition);
+      if (valid && column.columns)
+        column.columns = filter(column.columns, condition);
 
       return valid && (!column.columns || column.columns.length);
     });
-
   }
 
   function sort(columns, grid) {
-    columns.sort(function(a, b) {
-      var indexA = getOrDefault(grid.getColumnIndex(a.id)),
-        indexB = getOrDefault(grid.getColumnIndex(b.id));
+    columns
+      .sort(function(a, b) {
+        var indexA = getOrDefault(grid.getColumnIndex(a.id)),
+          indexB = getOrDefault(grid.getColumnIndex(b.id));
 
-      return indexA - indexB;
-    })
+        return indexA - indexB;
+      })
       .forEach(function(column) {
         if (column.columns) sort(column.columns, grid);
       });
@@ -524,8 +552,7 @@ function TreeColumns(treeColumns) {
   }
 
   function getDepth(node) {
-    if (node.length) for (var i in node)
-      return getDepth(node[i]);
+    if (node.length) for (var i in node) return getDepth(node[i]);
     else if (node.columns) return 1 + getDepth(node.columns);
     else return 1;
   }
@@ -535,18 +562,22 @@ function TreeColumns(treeColumns) {
     current = current || 0;
 
     if (depth == current) {
-
-      if (node.length) node.forEach(function(n) {
-        if (n.columns) n.extractColumns = function() {
-          return extractColumns(n);
-        };
-      });
+      if (node.length)
+        node.forEach(function(n) {
+          if (n.columns)
+            n.extractColumns = function() {
+              return extractColumns(n);
+            };
+        });
 
       return node;
-    } else for (var i in node)
-      if (node[i].columns) {
-        columns = columns.concat(getColumnsInDepth(node[i].columns, depth, current + 1));
-      }
+    } else
+      for (var i in node)
+        if (node[i].columns) {
+          columns = columns.concat(
+            getColumnsInDepth(node[i].columns, depth, current + 1)
+          );
+        }
 
     return columns;
   }
@@ -555,18 +586,12 @@ function TreeColumns(treeColumns) {
     var result = [];
 
     if (node.hasOwnProperty('length')) {
-
       for (var i = 0; i < node.length; i++)
         result = result.concat(extractColumns(node[i]));
-
     } else {
-
       if (node.hasOwnProperty('columns'))
-
         result = result.concat(extractColumns(node.columns));
-
       else return node;
-
     }
 
     return result;
@@ -579,7 +604,6 @@ function TreeColumns(treeColumns) {
   init();
 
   this.hasDepth = function() {
-
     for (var i in treeColumns)
       if (treeColumns[i].hasOwnProperty('columns')) return true;
 
@@ -628,5 +652,5 @@ function TreeColumns(treeColumns) {
     return ids.map(function(id) {
       return columnsById[id];
     });
-  }
+  };
 }

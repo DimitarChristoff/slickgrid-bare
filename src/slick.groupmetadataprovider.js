@@ -1,5 +1,5 @@
-import $      from 'jquery';
-import Slick  from './slick.core';
+import $ from 'jquery';
+import Slick from './slick.core';
 
 export default GroupItemMetadataProvider;
 
@@ -17,17 +17,17 @@ export default GroupItemMetadataProvider;
  * @constructor
  * @param options
  */
-function GroupItemMetadataProvider(options){
+function GroupItemMetadataProvider(options) {
   let _grid;
   let _defaults = {
-    groupCssClass: "slick-group",
-    groupTitleCssClass: "slick-group-title",
-    totalsCssClass: "slick-group-totals",
+    groupCssClass: 'slick-group',
+    groupTitleCssClass: 'slick-group-title',
+    totalsCssClass: 'slick-group-totals',
     groupFocusable: true,
     totalsFocusable: false,
-    toggleCssClass: "slick-group-toggle",
-    toggleExpandedCssClass: "expanded",
-    toggleCollapsedCssClass: "collapsed",
+    toggleCssClass: 'slick-group-toggle',
+    toggleExpandedCssClass: 'expanded',
+    toggleCollapsedCssClass: 'collapsed',
     enableExpandCollapse: true,
     groupFormatter: defaultGroupCellFormatter,
     totalsFormatter: defaultTotalsCellFormatter
@@ -35,49 +35,69 @@ function GroupItemMetadataProvider(options){
 
   options = $.extend(true, {}, _defaults, options);
 
-  function defaultGroupCellFormatter(row, cell, value, columnDef, item){
-    if (!options.enableExpandCollapse){
+  function defaultGroupCellFormatter(row, cell, value, columnDef, item) {
+    if (!options.enableExpandCollapse) {
       return item.title;
     }
 
-    let indentation = item.level * 15 + "px";
+    let indentation = item.level * 15 + 'px';
 
-    return "<span class='" + options.toggleCssClass + " " +
-      (item.collapsed ? options.toggleCollapsedCssClass : options.toggleExpandedCssClass) +
-      "' style='margin-left:" + indentation + "'>" +
-      "</span>" +
-      "<span class='" + options.groupTitleCssClass + "' level='" + item.level + "'>" +
+    return (
+      "<span class='" +
+      options.toggleCssClass +
+      ' ' +
+      (item.collapsed
+        ? options.toggleCollapsedCssClass
+        : options.toggleExpandedCssClass) +
+      "' style='margin-left:" +
+      indentation +
+      "'>" +
+      '</span>' +
+      "<span class='" +
+      options.groupTitleCssClass +
+      "' level='" +
+      item.level +
+      "'>" +
       item.title +
-      "</span>";
+      '</span>'
+    );
   }
 
-  function defaultTotalsCellFormatter(row, cell, value, columnDef, item){
-    return (columnDef.groupTotalsFormatter && columnDef.groupTotalsFormatter(item, columnDef)) || "";
+  function defaultTotalsCellFormatter(row, cell, value, columnDef, item) {
+    return (
+      (columnDef.groupTotalsFormatter &&
+        columnDef.groupTotalsFormatter(item, columnDef)) ||
+      ''
+    );
   }
 
-  function init(grid){
+  function init(grid) {
     _grid = grid;
     _grid.onClick.subscribe(handleGridClick);
     _grid.onKeyDown.subscribe(handleGridKeyDown);
   }
 
-  function destroy(){
-    if (_grid){
+  function destroy() {
+    if (_grid) {
       _grid.onClick.unsubscribe(handleGridClick);
       _grid.onKeyDown.unsubscribe(handleGridKeyDown);
     }
   }
 
-  function handleGridClick(e, args){
+  function handleGridClick(e, args) {
     let item = this.getDataItem(args.row);
-    if (item && item instanceof Slick.Group && $(e.target).hasClass(options.toggleCssClass)){
+    if (
+      item &&
+      item instanceof Slick.Group &&
+      $(e.target).hasClass(options.toggleCssClass)
+    ) {
       let range = _grid.getRenderedRange();
       this.getData().setRefreshHints({
         ignoreDiffsBefore: range.top,
         ignoreDiffsAfter: range.bottom + 1
       });
 
-      if (item.collapsed){
+      if (item.collapsed) {
         this.getData().expandGroup(item.groupingKey);
       } else {
         this.getData().collapseGroup(item.groupingKey);
@@ -89,19 +109,19 @@ function GroupItemMetadataProvider(options){
   }
 
   // TODO:  add -/+ handling
-  function handleGridKeyDown(e){
-    if (options.enableExpandCollapse && (e.which == Slick.keyCode.SPACE)){
+  function handleGridKeyDown(e) {
+    if (options.enableExpandCollapse && e.which == Slick.keyCode.SPACE) {
       let activeCell = this.getActiveCell();
-      if (activeCell){
+      if (activeCell) {
         let item = this.getDataItem(activeCell.row);
-        if (item && item instanceof Slick.Group){
+        if (item && item instanceof Slick.Group) {
           let range = _grid.getRenderedRange();
           this.getData().setRefreshHints({
             ignoreDiffsBefore: range.top,
             ignoreDiffsAfter: range.bottom + 1
           });
 
-          if (item.collapsed){
+          if (item.collapsed) {
             this.getData().expandGroup(item.groupingKey);
           } else {
             this.getData().collapseGroup(item.groupingKey);
@@ -114,14 +134,14 @@ function GroupItemMetadataProvider(options){
     }
   }
 
-  function getGroupRowMetadata(item){
+  function getGroupRowMetadata(item) {
     return {
       selectable: false,
       focusable: options.groupFocusable,
       cssClasses: options.groupCssClass,
       columns: {
         0: {
-          colspan: "*",
+          colspan: '*',
           formatter: options.groupFormatter,
           editor: null
         }
@@ -129,7 +149,7 @@ function GroupItemMetadataProvider(options){
     };
   }
 
-  function getTotalsRowMetadata(item){
+  function getTotalsRowMetadata(item) {
     return {
       selectable: false,
       focusable: options.totalsFocusable,

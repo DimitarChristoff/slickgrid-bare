@@ -1,6 +1,6 @@
-import Slick                      from './slick.core';
-import $                          from 'jquery';
-import GroupItemMetaDataProvider  from './slick.groupmetadataprovider';
+import Slick from './slick.core';
+import $ from 'jquery';
+import GroupItemMetaDataProvider from './slick.groupmetadataprovider';
 
 const Aggregators = {
   Avg: AvgAggregator,
@@ -23,7 +23,7 @@ export default Data;
  *
  * Relies on the data item having an "id" property uniquely identifying it.
  */
-function DataView(options){
+function DataView(options) {
   let self = this;
 
   let defaults = {
@@ -32,14 +32,14 @@ function DataView(options){
   };
 
   // private
-  let idProperty = 'id';  // property holding a unique row id
-  let items = [];         // data by index
-  let rows = [];          // data by row
-  let idxById = {};       // indexes by id
-  let rowsById = null;    // rows by id; lazy-calculated
-  let filter = null;      // filter function
-  let updated = null;     // updated item ids
-  let suspend = false;    // suspends the recalculation
+  let idProperty = 'id'; // property holding a unique row id
+  let items = []; // data by index
+  let rows = []; // data by row
+  let idxById = {}; // indexes by id
+  let rowsById = null; // rows by id; lazy-calculated
+  let filter = null; // filter function
+  let updated = null; // updated item ids
+  let suspend = false; // suspends the recalculation
   let sortAsc = true;
   let fastSortField;
   let sortComparer;
@@ -55,10 +55,8 @@ function DataView(options){
   let groupingInfoDefaults = {
     getter: null,
     formatter: null,
-    comparer: function(a, b){
-      return (a.value === b.value ? 0 :
-          (a.value > b.value ? 1 : -1)
-      );
+    comparer: function(a, b) {
+      return a.value === b.value ? 0 : a.value > b.value ? 1 : -1;
     },
     predefinedValues: [],
     aggregators: [],
@@ -85,51 +83,51 @@ function DataView(options){
 
   options = $.extend(true, {}, defaults, options);
 
-  function beginUpdate(){
+  function beginUpdate() {
     suspend = true;
   }
 
-  function endUpdate(){
+  function endUpdate() {
     suspend = false;
     refresh();
   }
 
-  function setRefreshHints(hints){
+  function setRefreshHints(hints) {
     refreshHints = hints;
   }
 
-  function setFilterArgs(args){
+  function setFilterArgs(args) {
     filterArgs = args;
   }
 
-  function updateIdxById(startingIndex){
+  function updateIdxById(startingIndex) {
     startingIndex = startingIndex || 0;
     let id;
-    for (let i = startingIndex, l = items.length; i < l; i++){
+    for (let i = startingIndex, l = items.length; i < l; i++) {
       id = items[i][idProperty];
-      if (id === undefined){
+      if (id === undefined) {
         throw "Each data element must implement a unique 'id' property";
       }
       idxById[id] = i;
     }
   }
 
-  function ensureIdUniqueness(){
+  function ensureIdUniqueness() {
     let id;
-    for (let i = 0, l = items.length; i < l; i++){
+    for (let i = 0, l = items.length; i < l; i++) {
       id = items[i][idProperty];
-      if (id === undefined || idxById[id] !== i){
+      if (id === undefined || idxById[id] !== i) {
         throw "Each data element must implement a unique 'id' property";
       }
     }
   }
 
-  function getItems(){
+  function getItems() {
     return items;
   }
 
-  function setItems(data, objectIdProperty){
-    if (objectIdProperty !== undefined){
+  function setItems(data, objectIdProperty) {
+    if (objectIdProperty !== undefined) {
       idProperty = objectIdProperty;
     }
     items = filteredItems = data;
@@ -139,14 +137,19 @@ function DataView(options){
     refresh();
   }
 
-  function setPagingOptions(args){
-    if (args.pageSize != undefined){
+  function setPagingOptions(args) {
+    if (args.pageSize != undefined) {
       pagesize = args.pageSize;
-      pagenum = pagesize ? Math.min(pagenum, Math.max(0, Math.ceil(totalRows / pagesize) - 1)) : 0;
+      pagenum = pagesize
+        ? Math.min(pagenum, Math.max(0, Math.ceil(totalRows / pagesize) - 1))
+        : 0;
     }
 
-    if (args.pageNum != undefined){
-      pagenum = Math.min(args.pageNum, Math.max(0, Math.ceil(totalRows / pagesize) - 1));
+    if (args.pageNum != undefined) {
+      pagenum = Math.min(
+        args.pageNum,
+        Math.max(0, Math.ceil(totalRows / pagesize) - 1)
+      );
     }
 
     onPagingInfoChanged.notify(getPagingInfo(), null, self);
@@ -154,20 +157,28 @@ function DataView(options){
     refresh();
   }
 
-  function getPagingInfo(){
-    let totalPages = pagesize ? Math.max(1, Math.ceil(totalRows / pagesize)) : 1;
-    return {pageSize: pagesize, pageNum: pagenum, totalRows: totalRows, totalPages: totalPages, dataView: self};
+  function getPagingInfo() {
+    let totalPages = pagesize
+      ? Math.max(1, Math.ceil(totalRows / pagesize))
+      : 1;
+    return {
+      pageSize: pagesize,
+      pageNum: pagenum,
+      totalRows: totalRows,
+      totalPages: totalPages,
+      dataView: self
+    };
   }
 
-  function sort(comparer, ascending){
+  function sort(comparer, ascending) {
     sortAsc = ascending;
     sortComparer = comparer;
     fastSortField = null;
-    if (ascending === false){
+    if (ascending === false) {
       items.reverse();
     }
     items.sort(comparer);
-    if (ascending === false){
+    if (ascending === false) {
       items.reverse();
     }
     idxById = {};
@@ -180,22 +191,25 @@ function DataView(options){
    * Does a [lexicographic] sort on a give column by temporarily overriding Object.prototype.toString
    * to return the value of that field and then doing a native Array.sort().
    */
-  function fastSort(field, ascending){
+  function fastSort(field, ascending) {
     sortAsc = ascending;
     fastSortField = field;
     sortComparer = null;
     let oldToString = Object.prototype.toString;
-    Object.prototype.toString = (typeof field == 'function') ? field : function(){
-      return this[field];
-    };
+    Object.prototype.toString =
+      typeof field == 'function'
+        ? field
+        : function() {
+            return this[field];
+          };
     // an extra reversal for descending sort keeps the sort stable
     // (assuming a stable native sort implementation, which isn't true in some cases)
-    if (ascending === false){
+    if (ascending === false) {
       items.reverse();
     }
     items.sort();
     Object.prototype.toString = oldToString;
-    if (ascending === false){
+    if (ascending === false) {
       items.reverse();
     }
     idxById = {};
@@ -203,46 +217,54 @@ function DataView(options){
     refresh();
   }
 
-  function reSort(){
-    if (sortComparer){
+  function reSort() {
+    if (sortComparer) {
       sort(sortComparer, sortAsc);
-    } else if (fastSortField){
+    } else if (fastSortField) {
       fastSort(fastSortField, sortAsc);
     }
   }
 
-  function setFilter(filterFn){
+  function setFilter(filterFn) {
     filter = filterFn;
-    if (options.inlineFilters){
+    if (options.inlineFilters) {
       compiledFilter = compileFilter();
       compiledFilterWithCaching = compileFilterWithCaching();
     }
     refresh();
   }
 
-  function getGrouping(){
+  function getGrouping() {
     return groupingInfos;
   }
 
-  function setGrouping(groupingInfo){
-    if (!options.groupItemMetadataProvider){
+  function setGrouping(groupingInfo) {
+    if (!options.groupItemMetadataProvider) {
       options.groupItemMetadataProvider = GroupItemMetadataProvider();
     }
 
     groups = [];
     toggledGroupsByLevel = [];
     groupingInfo = groupingInfo || [];
-    groupingInfos = (groupingInfo instanceof Array) ? groupingInfo : [groupingInfo];
+    groupingInfos =
+      groupingInfo instanceof Array ? groupingInfo : [groupingInfo];
 
-    for (let i = 0; i < groupingInfos.length; i++){
-      let gi = groupingInfos[i] = $.extend(true, {}, groupingInfoDefaults, groupingInfos[i]);
+    for (let i = 0; i < groupingInfos.length; i++) {
+      let gi = (groupingInfos[i] = $.extend(
+        true,
+        {},
+        groupingInfoDefaults,
+        groupingInfos[i]
+      ));
       gi.getterIsAFn = typeof gi.getter === 'function';
 
       // pre-compile accumulator loops
       gi.compiledAccumulators = [];
       let idx = gi.aggregators.length;
-      while (idx--){
-        gi.compiledAccumulators[idx] = compileAccumulatorLoop(gi.aggregators[idx]);
+      while (idx--) {
+        gi.compiledAccumulators[idx] = compileAccumulatorLoop(
+          gi.aggregators[idx]
+        );
       }
 
       toggledGroupsByLevel[i] = {};
@@ -254,8 +276,8 @@ function DataView(options){
   /**
    * @deprecated Please use {@link setGrouping}.
    */
-  function groupBy(valueGetter, valueFormatter, sortComparer){
-    if (valueGetter == null){
+  function groupBy(valueGetter, valueFormatter, sortComparer) {
+    if (valueGetter == null) {
       setGrouping([]);
       return;
     }
@@ -270,9 +292,11 @@ function DataView(options){
   /**
    * @deprecated Please use {@link setGrouping}.
    */
-  function setAggregators(groupAggregators, includeCollapsed){
-    if (!groupingInfos.length){
-      throw new Error('At least one grouping must be specified before calling setAggregators().');
+  function setAggregators(groupAggregators, includeCollapsed) {
+    if (!groupingInfos.length) {
+      throw new Error(
+        'At least one grouping must be specified before calling setAggregators().'
+      );
     }
 
     groupingInfos[0].aggregators = groupAggregators;
@@ -281,81 +305,81 @@ function DataView(options){
     setGrouping(groupingInfos);
   }
 
-  function getItemByIdx(i){
+  function getItemByIdx(i) {
     return items[i];
   }
 
-  function getIdxById(id){
+  function getIdxById(id) {
     return idxById[id];
   }
 
-  function ensureRowsByIdCache(){
-    if (!rowsById){
+  function ensureRowsByIdCache() {
+    if (!rowsById) {
       rowsById = {};
-      for (let i = 0, l = rows.length; i < l; i++){
+      for (let i = 0, l = rows.length; i < l; i++) {
         rowsById[rows[i][idProperty]] = i;
       }
     }
   }
 
-  function getRowById(id){
+  function getRowById(id) {
     ensureRowsByIdCache();
     return rowsById[id];
   }
 
-  function getItemById(id){
+  function getItemById(id) {
     return items[idxById[id]];
   }
 
-  function mapIdsToRows(idArray){
+  function mapIdsToRows(idArray) {
     let rows = [];
     ensureRowsByIdCache();
-    for (let i = 0, l = idArray.length; i < l; i++){
+    for (let i = 0, l = idArray.length; i < l; i++) {
       let row = rowsById[idArray[i]];
-      if (row != null){
+      if (row != null) {
         rows[rows.length] = row;
       }
     }
     return rows;
   }
 
-  function mapRowsToIds(rowArray){
+  function mapRowsToIds(rowArray) {
     let ids = [];
-    for (let i = 0, l = rowArray.length; i < l; i++){
-      if (rowArray[i] < rows.length){
+    for (let i = 0, l = rowArray.length; i < l; i++) {
+      if (rowArray[i] < rows.length) {
         ids[ids.length] = rows[rowArray[i]][idProperty];
       }
     }
     return ids;
   }
 
-  function updateItem(id, item){
-    if (idxById[id] === undefined || id !== item[idProperty]){
+  function updateItem(id, item) {
+    if (idxById[id] === undefined || id !== item[idProperty]) {
       throw 'Invalid or non-matching id';
     }
     items[idxById[id]] = item;
-    if (!updated){
+    if (!updated) {
       updated = {};
     }
     updated[id] = true;
     refresh();
   }
 
-  function insertItem(insertBefore, item){
+  function insertItem(insertBefore, item) {
     items.splice(insertBefore, 0, item);
     updateIdxById(insertBefore);
     refresh();
   }
 
-  function addItem(item){
+  function addItem(item) {
     items.push(item);
     updateIdxById(items.length - 1);
     refresh();
   }
 
-  function deleteItem(id){
+  function deleteItem(id) {
     let idx = idxById[id];
-    if (idx === undefined){
+    if (idx === undefined) {
       throw 'Invalid id';
     }
     delete idxById[id];
@@ -364,51 +388,51 @@ function DataView(options){
     refresh();
   }
 
-  function getLength(){
+  function getLength() {
     return rows.length;
   }
 
-  function getItem(i){
+  function getItem(i) {
     let item = rows[i];
 
     // if this is a group row, make sure totals are calculated and update the title
-    if (item && item.__group && item.totals && !item.totals.initialized){
+    if (item && item.__group && item.totals && !item.totals.initialized) {
       let gi = groupingInfos[item.level];
-      if (!gi.displayTotalsRow){
+      if (!gi.displayTotalsRow) {
         calculateTotals(item.totals);
         item.title = gi.formatter ? gi.formatter(item) : item.value;
       }
     }
     // if this is a totals row, make sure it's calculated
-    else if (item && item.__groupTotals && !item.initialized){
+    else if (item && item.__groupTotals && !item.initialized) {
       calculateTotals(item);
     }
 
     return item;
   }
 
-  function getItemMetadata(i){
+  function getItemMetadata(i) {
     let item = rows[i];
-    if (item === undefined){
+    if (item === undefined) {
       return null;
     }
 
     // overrides for grouping rows
-    if (item.__group){
+    if (item.__group) {
       return options.groupItemMetadataProvider.getGroupRowMetadata(item);
     }
 
     // overrides for totals rows
-    if (item.__groupTotals){
+    if (item.__groupTotals) {
       return options.groupItemMetadataProvider.getTotalsRowMetadata(item);
     }
 
     return null;
   }
 
-  function expandCollapseAllGroups(level, collapse){
-    if (level == null){
-      for (let i = 0; i < groupingInfos.length; i++){
+  function expandCollapseAllGroups(level, collapse) {
+    if (level == null) {
+      for (let i = 0; i < groupingInfos.length; i++) {
         toggledGroupsByLevel[i] = {};
         groupingInfos[i].collapsed = collapse;
       }
@@ -422,19 +446,20 @@ function DataView(options){
   /**
    * @param level {Number} Optional level to collapse.  If not specified, applies to all levels.
    */
-  function collapseAllGroups(level){
+  function collapseAllGroups(level) {
     expandCollapseAllGroups(level, true);
   }
 
   /**
    * @param level {Number} Optional level to expand.  If not specified, applies to all levels.
    */
-  function expandAllGroups(level){
+  function expandAllGroups(level) {
     expandCollapseAllGroups(level, false);
   }
 
-  function expandCollapseGroup(level, groupingKey, collapse){
-    toggledGroupsByLevel[level][groupingKey] = groupingInfos[level].collapsed ^ collapse;
+  function expandCollapseGroup(level, groupingKey, collapse) {
+    toggledGroupsByLevel[level][groupingKey] =
+      groupingInfos[level].collapsed ^ collapse;
     refresh();
   }
 
@@ -444,10 +469,10 @@ function DataView(options){
    *     example, calling collapseGroup('high', '10%') will collapse the '10%' subgroup of
    *     the 'high' group.
    */
-  function collapseGroup(letArgs){
+  function collapseGroup(letArgs) {
     let args = Array.prototype.slice.call(arguments);
     let arg0 = args[0];
-    if (args.length == 1 && arg0.indexOf(groupingDelimiter) != -1){
+    if (args.length == 1 && arg0.indexOf(groupingDelimiter) != -1) {
       expandCollapseGroup(arg0.split(groupingDelimiter).length - 1, arg0, true);
     } else {
       expandCollapseGroup(args.length - 1, args.join(groupingDelimiter), true);
@@ -460,21 +485,25 @@ function DataView(options){
    *     example, calling expandGroup('high', '10%') will expand the '10%' subgroup of
    *     the 'high' group.
    */
-  function expandGroup(letArgs){
+  function expandGroup(letArgs) {
     let args = Array.prototype.slice.call(arguments);
     let arg0 = args[0];
-    if (args.length == 1 && arg0.indexOf(groupingDelimiter) != -1){
-      expandCollapseGroup(arg0.split(groupingDelimiter).length - 1, arg0, false);
+    if (args.length == 1 && arg0.indexOf(groupingDelimiter) != -1) {
+      expandCollapseGroup(
+        arg0.split(groupingDelimiter).length - 1,
+        arg0,
+        false
+      );
     } else {
       expandCollapseGroup(args.length - 1, args.join(groupingDelimiter), false);
     }
   }
 
-  function getGroups(){
+  function getGroups() {
     return groups;
   }
 
-  function extractGroups(rows, parentGroup){
+  function extractGroups(rows, parentGroup) {
     let group;
     let val;
     let groups = [];
@@ -483,28 +512,32 @@ function DataView(options){
     let level = parentGroup ? parentGroup.level + 1 : 0;
     let gi = groupingInfos[level];
 
-    for (let i = 0, l = gi.predefinedValues.length; i < l; i++){
+    for (let i = 0, l = gi.predefinedValues.length; i < l; i++) {
       val = gi.predefinedValues[i];
       group = groupsByVal[val];
-      if (!group){
+      if (!group) {
         group = new Slick.Group();
         group.value = val;
         group.level = level;
-        group.groupingKey = (parentGroup ? parentGroup.groupingKey + groupingDelimiter : '') + val;
+        group.groupingKey =
+          (parentGroup ? parentGroup.groupingKey + groupingDelimiter : '') +
+          val;
         groups[groups.length] = group;
         groupsByVal[val] = group;
       }
     }
 
-    for (let i = 0, l = rows.length; i < l; i++){
+    for (let i = 0, l = rows.length; i < l; i++) {
       r = rows[i];
       val = gi.getterIsAFn ? gi.getter(r) : r[gi.getter];
       group = groupsByVal[val];
-      if (!group){
+      if (!group) {
         group = new Slick.Group();
         group.value = val;
         group.level = level;
-        group.groupingKey = (parentGroup ? parentGroup.groupingKey + groupingDelimiter : '') + val;
+        group.groupingKey =
+          (parentGroup ? parentGroup.groupingKey + groupingDelimiter : '') +
+          val;
         groups[groups.length] = group;
         groupsByVal[val] = group;
       }
@@ -512,8 +545,8 @@ function DataView(options){
       group.rows[group.count++] = r;
     }
 
-    if (level < groupingInfos.length - 1){
-      for (let i = 0; i < groups.length; i++){
+    if (level < groupingInfos.length - 1) {
+      for (let i = 0; i < groups.length; i++) {
         group = groups[i];
         group.groups = extractGroups(group.rows, group);
       }
@@ -524,26 +557,27 @@ function DataView(options){
     return groups;
   }
 
-  function calculateTotals(totals){
+  function calculateTotals(totals) {
     let group = totals.group;
     let gi = groupingInfos[group.level];
-    let isLeafLevel = (group.level == groupingInfos.length);
-    let agg, idx = gi.aggregators.length;
+    let isLeafLevel = group.level == groupingInfos.length;
+    let agg,
+      idx = gi.aggregators.length;
 
-    if (!isLeafLevel && gi.aggregateChildGroups){
+    if (!isLeafLevel && gi.aggregateChildGroups) {
       // make sure all the subgroups are calculated
       let i = group.groups.length;
-      while (i--){
-        if (!group.groups[i].totals.initialized){
+      while (i--) {
+        if (!group.groups[i].totals.initialized) {
           calculateTotals(group.groups[i].totals);
         }
       }
     }
 
-    while (idx--){
+    while (idx--) {
       agg = gi.aggregators[idx];
       agg.init();
-      if (!isLeafLevel && gi.aggregateChildGroups){
+      if (!isLeafLevel && gi.aggregateChildGroups) {
         gi.compiledAccumulators[idx].call(agg, group.groups);
       } else {
         gi.compiledAccumulators[idx].call(agg, group.rows);
@@ -553,36 +587,39 @@ function DataView(options){
     totals.initialized = true;
   }
 
-  function addGroupTotals(group){
+  function addGroupTotals(group) {
     let gi = groupingInfos[group.level];
     let totals = new Slick.GroupTotals();
     totals.group = group;
     group.totals = totals;
-    if (!gi.lazyTotalsCalculation){
+    if (!gi.lazyTotalsCalculation) {
       calculateTotals(totals);
     }
   }
 
-  function addTotals(groups, level){
+  function addTotals(groups, level) {
     level = level || 0;
     let gi = groupingInfos[level];
     let groupCollapsed = gi.collapsed;
     let toggledGroups = toggledGroupsByLevel[level];
-    let idx = groups.length, g;
-    while (idx--){
+    let idx = groups.length,
+      g;
+    while (idx--) {
       g = groups[idx];
 
-      if (g.collapsed && !gi.aggregateCollapsed){
+      if (g.collapsed && !gi.aggregateCollapsed) {
         continue;
       }
 
       // Do a depth-first aggregation so that parent group aggregators can access subgroup totals.
-      if (g.groups){
+      if (g.groups) {
         addTotals(g.groups, level + 1);
       }
 
-      if (gi.aggregators.length && (
-        gi.aggregateEmpty || g.rows.length || (g.groups && g.groups.length))){
+      if (
+        gi.aggregators.length &&
+        (gi.aggregateEmpty || g.rows.length || (g.groups && g.groups.length))
+      ) {
         addGroupTotals(g);
       }
 
@@ -591,29 +628,36 @@ function DataView(options){
     }
   }
 
-  function flattenGroupedRows(groups, level){
+  function flattenGroupedRows(groups, level) {
     level = level || 0;
     let gi = groupingInfos[level];
-    let groupedRows = [], rows, gl = 0, g;
-    for (let i = 0, l = groups.length; i < l; i++){
+    let groupedRows = [],
+      rows,
+      gl = 0,
+      g;
+    for (let i = 0, l = groups.length; i < l; i++) {
       g = groups[i];
       groupedRows[gl++] = g;
 
-      if (!g.collapsed){
+      if (!g.collapsed) {
         rows = g.groups ? flattenGroupedRows(g.groups, level + 1) : g.rows;
-        for (let j = 0, jj = rows.length; j < jj; j++){
+        for (let j = 0, jj = rows.length; j < jj; j++) {
           groupedRows[gl++] = rows[j];
         }
       }
 
-      if (g.totals && gi.displayTotalsRow && (!g.collapsed || gi.aggregateCollapsed)){
+      if (
+        g.totals &&
+        gi.displayTotalsRow &&
+        (!g.collapsed || gi.aggregateCollapsed)
+      ) {
         groupedRows[gl++] = g.totals;
       }
     }
     return groupedRows;
   }
 
-  function getFunctionInfo(fn){
+  function getFunctionInfo(fn) {
     let fnRegex = /^function[^(]*\(([^)]*)\)\s*{([\s\S]*)}$/;
     let matches = fn.toString().match(fnRegex);
     return {
@@ -622,20 +666,23 @@ function DataView(options){
     };
   }
 
-  function compileAccumulatorLoop(aggregator){
+  function compileAccumulatorLoop(aggregator) {
     let accumulatorInfo = getFunctionInfo(aggregator.accumulate);
     let fn = new Function(
       '_items',
-      'for (let ' + accumulatorInfo.params[0] + ', _i=0, _il=_items.length; _i<_il; _i++) {' +
-      accumulatorInfo.params[0] + ' = _items[_i]; ' +
-      accumulatorInfo.body +
-      '}'
+      'for (let ' +
+        accumulatorInfo.params[0] +
+        ', _i=0, _il=_items.length; _i<_il; _i++) {' +
+        accumulatorInfo.params[0] +
+        ' = _items[_i]; ' +
+        accumulatorInfo.body +
+        '}'
     );
     fn.displayName = 'compiledAccumulatorLoop';
     return fn;
   }
 
-  function compileFilter(){
+  function compileFilter() {
     let filterInfo = getFunctionInfo(filter);
 
     let filterPath1 = '{ continue _coreloop; }$1';
@@ -646,8 +693,10 @@ function DataView(options){
       .replace(/return!1([;}]|\}|$)/gi, filterPath1)
       .replace(/return true\s*([;}]|\}|$)/gi, filterPath2)
       .replace(/return!0([;}]|\}|$)/gi, filterPath2)
-      .replace(/return ([^;}]+?)\s*([;}]|$)/gi,
-        '{ if ($1) { _retval[_idx++] = $item$; }; continue _coreloop; }$2');
+      .replace(
+        /return ([^;}]+?)\s*([;}]|$)/gi,
+        '{ if ($1) { _retval[_idx++] = $item$; }; continue _coreloop; }$2'
+      );
 
     // This preserves the function template code after JS compression,
     // so that replace() commands still work as expected.
@@ -673,19 +722,22 @@ function DataView(options){
     return fn;
   }
 
-  function compileFilterWithCaching(){
+  function compileFilterWithCaching() {
     let filterInfo = getFunctionInfo(filter);
 
     let filterPath1 = '{ continue _coreloop; }$1';
-    let filterPath2 = '{ _cache[_i] = true;_retval[_idx++] = $item$; continue _coreloop; }$1';
+    let filterPath2 =
+      '{ _cache[_i] = true;_retval[_idx++] = $item$; continue _coreloop; }$1';
     // make some allowances for minification - there's only so far we can go with RegEx
     let filterBody = filterInfo.body
       .replace(/return false\s*([;}]|\}|$)/gi, filterPath1)
       .replace(/return!1([;}]|\}|$)/gi, filterPath1)
       .replace(/return true\s*([;}]|\}|$)/gi, filterPath2)
       .replace(/return!0([;}]|\}|$)/gi, filterPath2)
-      .replace(/return ([^;}]+?)\s*([;}]|$)/gi,
-        '{ if ((_cache[_i] = $1)) { _retval[_idx++] = $item$; }; continue _coreloop; }$2');
+      .replace(
+        /return ([^;}]+?)\s*([;}]|$)/gi,
+        '{ if ((_cache[_i] = $1)) { _retval[_idx++] = $item$; }; continue _coreloop; }$2'
+      );
 
     // This preserves the function template code after JS compression,
     // so that replace() commands still work as expected.
@@ -714,11 +766,12 @@ function DataView(options){
     return fn;
   }
 
-  function uncompiledFilter(items, args){
-    let retval = [], idx = 0;
+  function uncompiledFilter(items, args) {
+    let retval = [],
+      idx = 0;
 
-    for (let i = 0, ii = items.length; i < ii; i++){
-      if (filter(items[i], args)){
+    for (let i = 0, ii = items.length; i < ii; i++) {
+      if (filter(items[i], args)) {
         retval[idx++] = items[i];
       }
     }
@@ -726,14 +779,16 @@ function DataView(options){
     return retval;
   }
 
-  function uncompiledFilterWithCaching(items, args, cache){
-    let retval = [], idx = 0, item;
+  function uncompiledFilterWithCaching(items, args, cache) {
+    let retval = [],
+      idx = 0,
+      item;
 
-    for (let i = 0, ii = items.length; i < ii; i++){
+    for (let i = 0, ii = items.length; i < ii; i++) {
       item = items[i];
-      if (cache[i]){
+      if (cache[i]) {
         retval[idx++] = item;
-      } else if (filter(item, args)){
+      } else if (filter(item, args)) {
         retval[idx++] = item;
         cache[i] = true;
       }
@@ -742,16 +797,20 @@ function DataView(options){
     return retval;
   }
 
-  function getFilteredAndPagedItems(items){
-    if (filter){
-      let batchFilter = options.inlineFilters ? compiledFilter : uncompiledFilter;
-      let batchFilterWithCaching = options.inlineFilters ? compiledFilterWithCaching : uncompiledFilterWithCaching;
+  function getFilteredAndPagedItems(items) {
+    if (filter) {
+      let batchFilter = options.inlineFilters
+        ? compiledFilter
+        : uncompiledFilter;
+      let batchFilterWithCaching = options.inlineFilters
+        ? compiledFilterWithCaching
+        : uncompiledFilterWithCaching;
 
-      if (refreshHints.isFilterNarrowing){
+      if (refreshHints.isFilterNarrowing) {
         filteredItems = batchFilter(filteredItems, filterArgs);
-      } else if (refreshHints.isFilterExpanding){
+      } else if (refreshHints.isFilterExpanding) {
         filteredItems = batchFilterWithCaching(items, filterArgs, filterCache);
-      } else if (!refreshHints.isFilterUnchanged){
+      } else if (!refreshHints.isFilterUnchanged) {
         filteredItems = batchFilter(items, filterArgs);
       }
     } else {
@@ -763,11 +822,14 @@ function DataView(options){
 
     // get the current page
     let paged;
-    if (pagesize){
-      if (filteredItems.length < pagenum * pagesize){
+    if (pagesize) {
+      if (filteredItems.length < pagenum * pagesize) {
         pagenum = Math.floor(filteredItems.length / pagesize);
       }
-      paged = filteredItems.slice(pagesize * pagenum, pagesize * pagenum + pagesize);
+      paged = filteredItems.slice(
+        pagesize * pagenum,
+        pagesize * pagenum + pagesize
+      );
     } else {
       paged = filteredItems;
     }
@@ -775,38 +837,45 @@ function DataView(options){
     return {totalRows: filteredItems.length, rows: paged};
   }
 
-  function getRowDiffs(rows, newRows){
-    let item, r, eitherIsNonData, diff = [];
-    let from = 0, to = newRows.length;
+  function getRowDiffs(rows, newRows) {
+    let item,
+      r,
+      eitherIsNonData,
+      diff = [];
+    let from = 0,
+      to = newRows.length;
 
-    if (refreshHints && refreshHints.ignoreDiffsBefore){
-      from = Math.max(0,
-        Math.min(newRows.length, refreshHints.ignoreDiffsBefore));
+    if (refreshHints && refreshHints.ignoreDiffsBefore) {
+      from = Math.max(
+        0,
+        Math.min(newRows.length, refreshHints.ignoreDiffsBefore)
+      );
     }
 
-    if (refreshHints && refreshHints.ignoreDiffsAfter){
-      to = Math.min(newRows.length,
-        Math.max(0, refreshHints.ignoreDiffsAfter));
+    if (refreshHints && refreshHints.ignoreDiffsAfter) {
+      to = Math.min(newRows.length, Math.max(0, refreshHints.ignoreDiffsAfter));
     }
 
-    for (let i = from, rl = rows.length; i < to; i++){
-      if (i >= rl){
+    for (let i = from, rl = rows.length; i < to; i++) {
+      if (i >= rl) {
         diff[diff.length] = i;
       } else {
         item = newRows[i];
         r = rows[i];
 
-        if ((groupingInfos.length && (eitherIsNonData = (item.__nonDataRow) || (r.__nonDataRow)) &&
-          item.__group !== r.__group ||
-          item.__group && !item.equals(r))
-          || (eitherIsNonData &&
-          // no good way to compare totals since they are arbitrary DTOs
-          // deep object comparison is pretty expensive
-          // always considering them 'dirty' seems easier for the time being
-          (item.__groupTotals || r.__groupTotals))
-          || item[idProperty] != r[idProperty]
-          || (updated && updated[item[idProperty]])
-        ){
+        if (
+          (groupingInfos.length &&
+            (eitherIsNonData = item.__nonDataRow || r.__nonDataRow) &&
+            item.__group !== r.__group) ||
+          (item.__group && !item.equals(r)) ||
+          (eitherIsNonData &&
+            // no good way to compare totals since they are arbitrary DTOs
+            // deep object comparison is pretty expensive
+            // always considering them 'dirty' seems easier for the time being
+            (item.__groupTotals || r.__groupTotals)) ||
+          item[idProperty] != r[idProperty] ||
+          (updated && updated[item[idProperty]])
+        ) {
           diff[diff.length] = i;
         }
       }
@@ -814,11 +883,13 @@ function DataView(options){
     return diff;
   }
 
-  function recalc(_items){
+  function recalc(_items) {
     rowsById = null;
 
-    if (refreshHints.isFilterNarrowing != prevRefreshHints.isFilterNarrowing ||
-      refreshHints.isFilterExpanding != prevRefreshHints.isFilterExpanding){
+    if (
+      refreshHints.isFilterNarrowing != prevRefreshHints.isFilterNarrowing ||
+      refreshHints.isFilterExpanding != prevRefreshHints.isFilterExpanding
+    ) {
       filterCache = [];
     }
 
@@ -827,9 +898,9 @@ function DataView(options){
     let newRows = filteredItems.rows;
 
     groups = [];
-    if (groupingInfos.length){
+    if (groupingInfos.length) {
       groups = extractGroups(newRows);
-      if (groups.length){
+      if (groups.length) {
         addTotals(groups);
         newRows = flattenGroupedRows(groups);
       }
@@ -842,8 +913,8 @@ function DataView(options){
     return diff;
   }
 
-  function refresh(){
-    if (suspend){
+  function refresh() {
+    if (suspend) {
       return;
     }
 
@@ -854,7 +925,7 @@ function DataView(options){
 
     // if the current page is no longer valid, go to last page and recalc
     // we suffer a performance penalty here, but the main loop (recalc) remains highly optimized
-    if (pagesize && totalRows < pagenum * pagesize){
+    if (pagesize && totalRows < pagenum * pagesize) {
       pagenum = Math.max(0, Math.ceil(totalRows / pagesize) - 1);
       diff = recalc(items, filter);
     }
@@ -863,13 +934,17 @@ function DataView(options){
     prevRefreshHints = refreshHints;
     refreshHints = {};
 
-    if (totalRowsBefore !== totalRows){
+    if (totalRowsBefore !== totalRows) {
       onPagingInfoChanged.notify(getPagingInfo(), null, self);
     }
-    if (countBefore !== rows.length){
-      onRowCountChanged.notify({previous: countBefore, current: rows.length, dataView: self}, null, self);
+    if (countBefore !== rows.length) {
+      onRowCountChanged.notify(
+        {previous: countBefore, current: rows.length, dataView: self},
+        null,
+        self
+      );
     }
-    if (diff.length > 0){
+    if (diff.length > 0) {
       onRowsChanged.notify({rows: diff, dataView: self}, null, self);
     }
   }
@@ -893,31 +968,39 @@ function DataView(options){
    *     access to the full list selected row ids, and not just the ones visible to the grid.
    * @method syncGridSelection
    */
-  function syncGridSelection(grid, preserveHidden, preserveHiddenOnSelectionChange){
+  function syncGridSelection(
+    grid,
+    preserveHidden,
+    preserveHiddenOnSelectionChange
+  ) {
     let self = this;
     let inHandler;
     let selectedRowIds = self.mapRowsToIds(grid.getSelectedRows());
     let onSelectedRowIdsChanged = new Slick.Event();
 
-    function setSelectedRowIds(rowIds){
-      if (selectedRowIds.join(',') == rowIds.join(',')){
+    function setSelectedRowIds(rowIds) {
+      if (selectedRowIds.join(',') == rowIds.join(',')) {
         return;
       }
 
       selectedRowIds = rowIds;
 
-      onSelectedRowIdsChanged.notify({
-        'grid': grid,
-        'ids': selectedRowIds,
-        'dataView': self
-      }, new Slick.EventData(), self);
+      onSelectedRowIdsChanged.notify(
+        {
+          grid: grid,
+          ids: selectedRowIds,
+          dataView: self
+        },
+        new Slick.EventData(),
+        self
+      );
     }
 
-    function update(){
-      if (selectedRowIds.length > 0){
+    function update() {
+      if (selectedRowIds.length > 0) {
         inHandler = true;
         let selectedRows = self.mapIdsToRows(selectedRowIds);
-        if (!preserveHidden){
+        if (!preserveHidden) {
           setSelectedRowIds(self.mapRowsToIds(selectedRows));
         }
         grid.setSelectedRows(selectedRows);
@@ -925,16 +1008,16 @@ function DataView(options){
       }
     }
 
-    grid.onSelectedRowsChanged.subscribe(function(e, args){
-      if (inHandler){
+    grid.onSelectedRowsChanged.subscribe(function(e, args) {
+      if (inHandler) {
         return;
       }
       let newSelectedRowIds = self.mapRowsToIds(grid.getSelectedRows());
-      if (!preserveHiddenOnSelectionChange || !grid.getOptions().multiSelect){
+      if (!preserveHiddenOnSelectionChange || !grid.getOptions().multiSelect) {
         setSelectedRowIds(newSelectedRowIds);
       } else {
         // keep the ones that are hidden
-        let existing = $.grep(selectedRowIds, function(id){
+        let existing = $.grep(selectedRowIds, function(id) {
           return self.getRowById(id) === undefined;
         });
         // add the newly selected ones
@@ -949,7 +1032,7 @@ function DataView(options){
     return onSelectedRowIdsChanged;
   }
 
-  function syncGridCellCssStyles(grid, key){
+  function syncGridCellCssStyles(grid, key) {
     let hashById;
     let inHandler;
 
@@ -957,22 +1040,22 @@ function DataView(options){
     // get the existing ones right away
     storeCellCssStyles(grid.getCellCssStyles(key));
 
-    function storeCellCssStyles(hash){
+    function storeCellCssStyles(hash) {
       hashById = {};
-      for (let row in hash){
+      for (let row in hash) {
         let id = rows[row][idProperty];
         hashById[id] = hash[row];
       }
     }
 
-    function update(){
-      if (hashById){
+    function update() {
+      if (hashById) {
         inHandler = true;
         ensureRowsByIdCache();
         let newHash = {};
-        for (let id in hashById){
+        for (let id in hashById) {
           let row = rowsById[id];
-          if (row != undefined){
+          if (row != undefined) {
             newHash[row] = hashById[id];
           }
         }
@@ -981,14 +1064,14 @@ function DataView(options){
       }
     }
 
-    grid.onCellCssStylesChanged.subscribe(function(e, args){
-      if (inHandler){
+    grid.onCellCssStylesChanged.subscribe(function(e, args) {
+      if (inHandler) {
         return;
       }
-      if (key != args.key){
+      if (key != args.key) {
         return;
       }
-      if (args.hash){
+      if (args.hash) {
         storeCellCssStyles(args.hash);
       }
     });
@@ -1000,145 +1083,145 @@ function DataView(options){
 
   $.extend(this, {
     // methods
-    'beginUpdate': beginUpdate,
-    'endUpdate': endUpdate,
-    'setPagingOptions': setPagingOptions,
-    'getPagingInfo': getPagingInfo,
-    'getItems': getItems,
-    'setItems': setItems,
-    'setFilter': setFilter,
-    'sort': sort,
-    'fastSort': fastSort,
-    'reSort': reSort,
-    'setGrouping': setGrouping,
-    'getGrouping': getGrouping,
-    'groupBy': groupBy,
-    'setAggregators': setAggregators,
-    'collapseAllGroups': collapseAllGroups,
-    'expandAllGroups': expandAllGroups,
-    'collapseGroup': collapseGroup,
-    'expandGroup': expandGroup,
-    'getGroups': getGroups,
-    'getIdxById': getIdxById,
-    'getRowById': getRowById,
-    'getItemById': getItemById,
-    'getItemByIdx': getItemByIdx,
-    'mapRowsToIds': mapRowsToIds,
-    'mapIdsToRows': mapIdsToRows,
-    'setRefreshHints': setRefreshHints,
-    'setFilterArgs': setFilterArgs,
-    'refresh': refresh,
-    'updateItem': updateItem,
-    'insertItem': insertItem,
-    'addItem': addItem,
-    'deleteItem': deleteItem,
-    'syncGridSelection': syncGridSelection,
-    'syncGridCellCssStyles': syncGridCellCssStyles,
+    beginUpdate: beginUpdate,
+    endUpdate: endUpdate,
+    setPagingOptions: setPagingOptions,
+    getPagingInfo: getPagingInfo,
+    getItems: getItems,
+    setItems: setItems,
+    setFilter: setFilter,
+    sort: sort,
+    fastSort: fastSort,
+    reSort: reSort,
+    setGrouping: setGrouping,
+    getGrouping: getGrouping,
+    groupBy: groupBy,
+    setAggregators: setAggregators,
+    collapseAllGroups: collapseAllGroups,
+    expandAllGroups: expandAllGroups,
+    collapseGroup: collapseGroup,
+    expandGroup: expandGroup,
+    getGroups: getGroups,
+    getIdxById: getIdxById,
+    getRowById: getRowById,
+    getItemById: getItemById,
+    getItemByIdx: getItemByIdx,
+    mapRowsToIds: mapRowsToIds,
+    mapIdsToRows: mapIdsToRows,
+    setRefreshHints: setRefreshHints,
+    setFilterArgs: setFilterArgs,
+    refresh: refresh,
+    updateItem: updateItem,
+    insertItem: insertItem,
+    addItem: addItem,
+    deleteItem: deleteItem,
+    syncGridSelection: syncGridSelection,
+    syncGridCellCssStyles: syncGridCellCssStyles,
 
     // data provider methods
-    'getLength': getLength,
-    'getItem': getItem,
-    'getItemMetadata': getItemMetadata,
+    getLength: getLength,
+    getItem: getItem,
+    getItemMetadata: getItemMetadata,
 
     // events
-    'onRowCountChanged': onRowCountChanged,
-    'onRowsChanged': onRowsChanged,
-    'onPagingInfoChanged': onPagingInfoChanged
+    onRowCountChanged: onRowCountChanged,
+    onRowsChanged: onRowsChanged,
+    onPagingInfoChanged: onPagingInfoChanged
   });
 }
 
-function AvgAggregator(field){
+function AvgAggregator(field) {
   this.field_ = field;
 
-  this.init = function(){
+  this.init = function() {
     this.count_ = 0;
     this.nonNullCount_ = 0;
     this.sum_ = 0;
   };
 
-  this.accumulate = function(item){
+  this.accumulate = function(item) {
     let val = item[this.field_];
     this.count_++;
-    if (val != null && val !== '' && !isNaN(val)){
+    if (val != null && val !== '' && !isNaN(val)) {
       this.nonNullCount_++;
       this.sum_ += parseFloat(val);
     }
   };
 
-  this.storeResult = function(groupTotals){
-    if (!groupTotals.avg){
+  this.storeResult = function(groupTotals) {
+    if (!groupTotals.avg) {
       groupTotals.avg = {};
     }
-    if (this.nonNullCount_ != 0){
+    if (this.nonNullCount_ != 0) {
       groupTotals.avg[this.field_] = this.sum_ / this.nonNullCount_;
     }
   };
 }
 
-function MinAggregator(field){
+function MinAggregator(field) {
   this.field_ = field;
 
-  this.init = function(){
+  this.init = function() {
     this.min_ = null;
   };
 
-  this.accumulate = function(item){
+  this.accumulate = function(item) {
     let val = item[this.field_];
-    if (val != null && val !== '' && !isNaN(val)){
-      if (this.min_ == null || val < this.min_){
+    if (val != null && val !== '' && !isNaN(val)) {
+      if (this.min_ == null || val < this.min_) {
         this.min_ = val;
       }
     }
   };
 
-  this.storeResult = function(groupTotals){
-    if (!groupTotals.min){
+  this.storeResult = function(groupTotals) {
+    if (!groupTotals.min) {
       groupTotals.min = {};
     }
     groupTotals.min[this.field_] = this.min_;
   };
 }
 
-function MaxAggregator(field){
+function MaxAggregator(field) {
   this.field_ = field;
 
-  this.init = function(){
+  this.init = function() {
     this.max_ = null;
   };
 
-  this.accumulate = function(item){
+  this.accumulate = function(item) {
     let val = item[this.field_];
-    if (val != null && val !== '' && !isNaN(val)){
-      if (this.max_ == null || val > this.max_){
+    if (val != null && val !== '' && !isNaN(val)) {
+      if (this.max_ == null || val > this.max_) {
         this.max_ = val;
       }
     }
   };
 
-  this.storeResult = function(groupTotals){
-    if (!groupTotals.max){
+  this.storeResult = function(groupTotals) {
+    if (!groupTotals.max) {
       groupTotals.max = {};
     }
     groupTotals.max[this.field_] = this.max_;
   };
 }
 
-function SumAggregator(field){
+function SumAggregator(field) {
   this.field_ = field;
 
-  this.init = function(){
+  this.init = function() {
     this.sum_ = null;
   };
 
-  this.accumulate = function(item){
+  this.accumulate = function(item) {
     let val = item[this.field_];
-    if (val != null && val !== '' && !isNaN(val)){
+    if (val != null && val !== '' && !isNaN(val)) {
       this.sum_ += parseFloat(val);
     }
   };
 
-  this.storeResult = function(groupTotals){
-    if (!groupTotals.sum){
+  this.storeResult = function(groupTotals) {
+    if (!groupTotals.sum) {
       groupTotals.sum = {};
     }
     groupTotals.sum[this.field_] = this.sum_;

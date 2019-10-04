@@ -1,21 +1,23 @@
-# SlickGrid Bare 
+# SlickGrid Bare
 
 [![npm version](https://img.shields.io/npm/v/slickgrid-bare.svg?style=flat-square)](https://www.npmjs.com/package/slickgrid-bare) [![npm downloads](https://img.shields.io/npm/dm/slickgrid-bare.svg?style=flat-square)](https://www.npmjs.com/package/slickgrid-bare) ![gzip size](http://img.badgesize.io/https://npmcdn.com/slickgrid-bare/dist/slick.min.js?compression=gzip)
 
-This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6) but with previously FrozenGrid exported as Grid ([X-SlickGrid](https://github.com/ddomingues/X-SlickGrid)) 
+This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6) but with previously FrozenGrid exported as Grid ([X-SlickGrid](https://github.com/ddomingues/X-SlickGrid))
 
 It does not have any default plugins, editors, cell renderers that you normally find in other SlickGrid forks.
 It has no jQuery-UI (uses customised version of Interact.js instead).
- 
+
 ## Install
 
 Simply:
+
 ```shell script
 $ npm i slickgrid-bare --save
 $ yarn add slickgrid-bare
 ```
+
 There's a peerDependency on jQuery 2.2+ that you have to provide yourself, works with that or 3+
- 
+
 ## Use
 
 ```js
@@ -53,8 +55,8 @@ grid.onColumnsReordered.subscribe(() => {
 grid.init();
 ```
 
-This package does not come with a built CSS version, you get SCSS export only. Ideally, copy the files locally and fix 
-but some defaults are available. 
+This package does not come with a built CSS version, you get SCSS export only. Ideally, copy the files locally and fix
+but some defaults are available.
 
 ```scss
 @import '~slickgrid-bare/dist/slick.grid.variables.scss';
