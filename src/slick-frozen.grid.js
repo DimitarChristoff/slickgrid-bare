@@ -1189,7 +1189,10 @@ function SlickGrid(container, data, columns, options){
 
     placeholder.className = 'interact-placeholder';
 
-    interact('.slick-header-column', {context: $container[0]})
+    const selector = (options.frozenColumn !== -1) ?
+      '.slick-header-right .slick-header-column' :
+      '.slick-header-column';
+    interact(selector, {context: $container[0]})
       .ignoreFrom('.slick-resizable-handle')
       .draggable({
         inertia: true,
@@ -1258,8 +1261,8 @@ function SlickGrid(container, data, columns, options){
 
           const newColumns = [];
           $headers.find('.slick-header-column').each(function(index){
-            newColumns.push(columns[$(this).data('index')]);
-            $(this).removeData('index');
+              newColumns.push(columns[$(this).data('index')]);
+              $(this).removeData('index');
           });
 
           setColumns(newColumns);
@@ -1269,7 +1272,7 @@ function SlickGrid(container, data, columns, options){
         }
       })
       .dropzone({
-        accept: '.slick-header-column',
+        accept: selector,
 
         ondragenter: event => {
           event.target.classList.add('interact-drop-active');
