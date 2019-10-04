@@ -29,15 +29,15 @@ module.exports = {
 
   module: {
     loaders: [{
-      test: /\.(js|jsx)$/,
+      test: /\.(js)$/,
       exclude: /(node_modules)/,
       loader: 'babel',
       query: {
         presets: ['es2015', 'stage-0']
       }
     }, {
-      test: /\.(scss|css)$/,
-      loader: 'style-loader!css-loader!scss-loader'
+      test: /\.(scss)$/,
+      loader: 'style-loader!scss-loader'
     }]
   },
 
