@@ -9,14 +9,14 @@ It has no jQuery-UI (uses customised version of Interact.js instead).
 
 ## Install
 
-Simply:
+Simply (with jquery peer dep):
 
 ```shell script
-$ npm i slickgrid-bare --save
-$ yarn add slickgrid-bare
+$ npm i slickgrid-bare jquery --save
+$ yarn add slickgrid-bare jquery
 ```
 
-There's a peerDependency on jQuery 2.2+ that you have to provide yourself, works with that or 3+
+The peerDependency on jQuery is v2.2+ that you have to provide yourself (which is deemed insecure), works with that or v3+
 
 ## Use
 
@@ -24,7 +24,18 @@ There's a peerDependency on jQuery 2.2+ that you have to provide yourself, works
 import {Data, Grid, Slick} from 'slickgrid-bare';
 
 const data = new Data.DataView([{...}, {...}]);
-const columns = [{...}];
+const columns = [{
+  id: 'name',
+  resizable: true,
+  name: 'Name',
+  field: 'name',
+  cssClass: 'is-text',
+  minWidth: 60,
+  maxWidth: 200,
+  sortable: true,
+  sortComparer: (a, b) => a > b ? -1 : 0,
+  formatter: (row, column, value) => `<div>${value}</div>`
+}];
 const options = {
   rowHeight: 30,
   editable: false,
