@@ -2,7 +2,8 @@
 
 [![npm version](https://img.shields.io/npm/v/slickgrid-bare.svg?style=flat-square)](https://www.npmjs.com/package/slickgrid-bare) [![npm downloads](https://img.shields.io/npm/dm/slickgrid-bare.svg?style=flat-square)](https://www.npmjs.com/package/slickgrid-bare) ![gzip size](http://img.badgesize.io/https://npmcdn.com/slickgrid-bare/dist/slick.min.js?compression=gzip)
 
-This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6) but with previously FrozenGrid exported as Grid ([X-SlickGrid](https://github.com/ddomingues/X-SlickGrid))
+This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6) but with previously FrozenGrid exported as Grid ([X-SlickGrid](https://github.com/ddomingues/X-SlickGrid)), 
+the 6pac version is build outside of the main bundle and available via a manual import.
 
 It does not have any default plugins, editors, cell renderers that you normally find in other SlickGrid forks.
 It has no jQuery-UI (uses customised version of Interact.js instead).
@@ -64,6 +65,14 @@ grid.onColumnsReordered.subscribe(() => {
 });
 
 grid.init();
+```
+
+Optimised use for build sizes in modula imports:
+
+```js
+import Grid from 'slickgrid-bare/dist/6pac.min';
+import FrozenGrid from 'slickgrid-bare/dist/frozen.min';
+import Data from 'slickgrid-bare/dist/data.min';
 ```
 
 This package does not come with a built CSS version, you get SCSS export only. Ideally, copy the files locally and fix
