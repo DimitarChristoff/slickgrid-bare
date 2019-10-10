@@ -64,7 +64,7 @@
     &::-webkit-scrollbar-thumb {
       border-radius: 4px;
       border: 2px solid white; /* should match background, can't be transparent */
-      background-color: rgba(0, 0, 0, .5);
+      background-color: rgba(0, 0, 0, 0.5);
     }
   }
   .slick-header,
@@ -140,7 +140,6 @@
     float: left;
   }
 
-
   .slick-cell {
     box-sizing: border-box;
     border-style: $grid-border-style;
@@ -148,7 +147,8 @@
   }
 
   .slick-header-column {
-    padding: $cell-padding-top $cell-padding-right $cell-padding-bottom $cell-padding-left;
+    padding: $cell-padding-top $cell-padding-right $cell-padding-bottom
+      $cell-padding-left;
   }
 
   .grid-canvas {
@@ -187,7 +187,7 @@
   }
 
   .slick-header.ui-state-default {
-    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .slick-column-name {
@@ -279,7 +279,7 @@
 .interact-placeholder {
   background: red !important;
   display: inline-block;
-  float:left;
+  float: left;
   transform: translate(0px, -100%);
 }
 
@@ -288,9 +288,8 @@
 }
 
 .interact-can-drop {
-  opacity: .9;
+  opacity: 0.9;
 }
-
 
 .scrollbar-fix {
   &::-webkit-scrollbar {

@@ -13,15 +13,24 @@ module.exports = {
   context: __dirname,
 
   entry: {
-    index: [
+    slick: [
       path.join(__INPUT__, 'index.js')
+    ],
+    '6pac': [
+      path.join(__INPUT__, 'slick.grid.js')
+    ],
+    frozen: [
+      path.join(__INPUT__, 'slick-frozen.grid.js')
+    ],
+    data: [
+      path.join(__INPUT__, 'slick.dataview.js')
     ]
   },
 
   output: {
     path: __OUTPUT__,
     publicPath: '/',
-    filename: `slick.min.js`,
+    filename: `[name].min.js`,
     libraryTarget: 'commonjs2'
   },
 

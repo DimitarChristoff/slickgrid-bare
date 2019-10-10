@@ -70,7 +70,7 @@
       }
 
       &.active {
-        border-color: rgba(0, 0, 0, .3);
+        border-color: rgba(0, 0, 0, 0.3);
         border-style: solid;
         border-width: 1px;
 
@@ -88,7 +88,6 @@
           padding: 2px 3px 2px 3px;
           transform: translate(-3px, -2px);
         }
-
       }
     }
 
@@ -188,7 +187,7 @@
 
   .slick-header-menu {
     background: none repeat scroll 0 0 white;
-    border: 1px solid #BFBDBD;
+    border: 1px solid #bfbdbd;
     min-width: 175px;
     padding: 4px;
     z-index: 100000;
@@ -198,7 +197,7 @@
     position: absolute;
 
     button {
-      border: 1px solid #BFBDBD;
+      border: 1px solid #bfbdbd;
       background-color: white;
       width: 45px;
       padding: 4px;
@@ -206,7 +205,7 @@
     }
 
     .filter {
-      border: 1px solid #BFBDBD;
+      border: 1px solid #bfbdbd;
       font-size: 8pt;
       height: 400px;
       margin-top: 6px;
@@ -223,7 +222,7 @@
         margin-right: 10px;
       }
 
-      & > input[type=text] {
+      & > input[type='text'] {
         width: 70%;
       }
     }
@@ -258,7 +257,7 @@
   }
 
   .slick-header-menuitem:hover {
-    border-color: #BFBDBD;
+    border-color: #bfbdbd;
   }
 
   .header-overlay,
@@ -295,14 +294,14 @@ div.slick-large-editor-text {
   position: absolute;
   background: $grid-cell-color;
   padding: 5px;
-  border: 1px solid rgba(0, 0, 0, .5);
-  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, .3);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.3);
   textarea {
     backround: transparent;
     width: 250px;
     height: 80px;
     border: 0;
-    outline: 0
+    outline: 0;
   }
   div {
     text-align: right;
