@@ -1,6 +1,6 @@
 {
   "name": "slickgrid-bare",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Non-tracking fork of X-SlickGrid with interact.js and jquery 3.4.1 as external. Barebones, don't use if you don't understand.",
   "main": "dist/slick.js",
   "scripts": {
