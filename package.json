@@ -2,7 +2,7 @@
   "name": "slickgrid-bare",
   "version": "1.1.0",
   "description": "Non-tracking fork of X-SlickGrid with interact.js and jquery 3.4.1 as external. Barebones, don't use if you don't understand.",
-  "main": "dist/slick.min.js",
+  "main": "dist/slick.js",
   "scripts": {
     "build": "rimraf dist && cross-env NODE_ENV=production webpack --progress --"
   },

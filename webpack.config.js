@@ -13,7 +13,7 @@ module.exports = {
   context: __dirname,
 
   entry: {
-    slick: [
+    slickgrid: [
       path.join(__INPUT__, 'index.js')
     ],
     '6pac': [
@@ -24,13 +24,16 @@ module.exports = {
     ],
     data: [
       path.join(__INPUT__, 'slick.dataview.js')
+    ],
+    core: [
+      path.join(__INPUT__, 'slick.core.js')
     ]
   },
 
   output: {
     path: __OUTPUT__,
     publicPath: '/',
-    filename: `[name].min.js`,
+    filename: `[name].js`,
     libraryTarget: 'commonjs2'
   },
 

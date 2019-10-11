@@ -2431,7 +2431,7 @@ function SlickGrid(container, data, columns, options) {
 
     if (hScrollDist || vScrollDist) {
       if (h_render) {
-        clearTimeout(h_render);
+        cancelAnimationFrame(h_render);
       }
 
       if (
@@ -2445,7 +2445,7 @@ function SlickGrid(container, data, columns, options) {
         ) {
           render();
         } else {
-          h_render = setTimeout(render, 50);
+          h_render = requestAnimationFrame(render);
         }
 
         trigger(self.onViewportChanged, {grid: self});
