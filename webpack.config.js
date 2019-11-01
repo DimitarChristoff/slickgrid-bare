@@ -27,6 +27,9 @@ module.exports = {
     ],
     core: [
       path.join(__INPUT__, 'slick.core.js')
+    ],
+    interact: [
+      path.join(__INPUT__, 'interact.js')
     ]
   },
 

@@ -1394,7 +1394,7 @@ function SlickGrid(container, data, columns, options) {
       options.frozenColumn !== -1
         ? '.slick-header-right .slick-header-column'
         : '.slick-header-column';
-    interact(selector, { context: $container[0] })
+    interact(selector, {context: $container[0]})
       .ignoreFrom('.slick-resizable-handle')
       .draggable({
         inertia: true,
@@ -1402,7 +1402,7 @@ function SlickGrid(container, data, columns, options) {
         restrict: {
           restriction: 'parent',
           endOnly: true,
-          elementRect: { top: 0, left: 0, bottom: 0, right: 0 }
+          elementRect: {top: 0, left: 0, bottom: 0, right: 0}
         },
         // enable autoScroll
         autoScroll: true,
@@ -1558,7 +1558,7 @@ function SlickGrid(container, data, columns, options) {
         interact(element)
           .resizable({
             preserveAspectRatio: false,
-            edges: { left: true, right: true, bottom: false, top: false }
+            edges: {left: true, right: true, bottom: false, top: false}
           })
           .on('resizestart', function(event) {
             if (!getEditorLock().commitCurrentEdit()) {
@@ -1593,7 +1593,7 @@ function SlickGrid(container, data, columns, options) {
             invalidateAllRows();
             updateCanvasWidth(true);
             render();
-            trigger(self.onColumnsResized, { grid: self });
+            trigger(self.onColumnsResized, {grid: self});
           });
       }
     });
@@ -2272,7 +2272,8 @@ function SlickGrid(container, data, columns, options) {
     setScroller();
     zombieRowNodeFromLastMouseWheelEvent = null;
 
-    setColumns(treeColumns.extractColumns());
+    // https://github.com/ddomingues/X-SlickGrid/pull/26/commits/e08d6351bd350b3c203b91dd360acc5b505caaf0
+    if (treeColumns.hasDepth()) setColumns(treeColumns.extractColumns());
     render();
   }
 
@@ -2810,6 +2811,11 @@ function SlickGrid(container, data, columns, options) {
 
     // The top viewport does not contain the top panel or header row
     viewportTopH = paneTopH - topPanelH - headerRowH - footerRowH;
+
+    // dimi: when no frozen columns and too many columns, scrollbar goes off-screen as opposed to on the left pane
+    if (!hasFrozenColumns() && !options.autoHeight) {
+      viewportTopH -= scrollbarDimensions.height;
+    }
 
     if (options.autoHeight) {
       if (hasFrozenColumns()) {
