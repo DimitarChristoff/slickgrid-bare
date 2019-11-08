@@ -4739,7 +4739,6 @@ function SlickGrid(container, data, columns, options) {
   }
 
   function navigateDown() {
-    console.log('down');
     return navigate('down');
   }
 
