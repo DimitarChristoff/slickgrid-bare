@@ -2211,6 +2211,8 @@
         draggableElement = this.element,
         drop = this.getDrop(dragEvent, event, draggableElement);
 
+      dragEvent.originalEvent = event;
+
       this.dropTarget = drop.dropzone;
       this.dropElement = drop.element;
 
