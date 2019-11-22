@@ -1614,10 +1614,7 @@ function SlickGrid(container, data, columns, options) {
   }
 
   function setFrozenOptions() {
-    options.frozenColumn =
-      options.frozenColumn >= 0 && options.frozenColumn < columns.length
-        ? parseInt(options.frozenColumn)
-        : -1;
+    options.frozenColumn = Number(options.frozenColumn);
 
     options.frozenRow =
       options.frozenRow >= 0 && options.frozenRow < numVisibleRows
