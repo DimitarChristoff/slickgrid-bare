@@ -1,0 +1,47 @@
+version: 2
+plan:
+  project-key: ALPHAP
+  key: IACOMP
+  name: Alpha_Slickgrid
+variables:
+  revision: 'patch'
+stages:
+  - Build Artifacts Stage:
+      - Test and Build
+  - Publish Stage:
+      jobs:
+        - Publish NPM
+
+Test and Build:
+  key: BNPM
+  tasks:
+    - clean
+    - script:
+        interpreter: /bin/sh
+        scripts:
+          - chmod +x ./bamboo-scripts/build-npm.sh && ./bamboo-scripts/build-npm.sh
+  artifacts:
+    - name: Files
+      pattern: 'dist/*'
+    - name: package.json
+      pattern: 'package.json'
+  requirements:
+    - system.docker.executable
+  docker:
+    image: pull-containers.liquidnet.com/wa/bamboo-agent-liquidnt:latest
+    use-default-volumes: true
+
+Publish NPM:
+  key: PNPM
+  tasks:
+    - clean
+    - script:
+        interpreter: /bin/sh
+        scripts:
+          - rm -rf xml-data/build-dir/_git-repositories-cache
+          - chmod +x ./bamboo-scripts/publish-artifactory.sh && ./bamboo-scripts/publish-artifactory.sh $revision
+  requirements:
+    - system.docker.executable
+  docker:
+    image: pull-containers.liquidnet.com/wa/bamboo-agent-liquidnt:latest
+    use-default-volumes: true

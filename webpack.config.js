@@ -7,30 +7,17 @@ const __OUTPUT__ = path.join(__dirname, 'dist');
 const __INPUT__ = path.join(__dirname, 'src');
 
 module.exports = {
-
   devtool: 'source-map',
 
   context: __dirname,
 
   entry: {
-    slickgrid: [
-      path.join(__INPUT__, 'index.js')
-    ],
-    '6pac': [
-      path.join(__INPUT__, 'slick.grid.js')
-    ],
-    frozen: [
-      path.join(__INPUT__, 'slick-frozen.grid.js')
-    ],
-    data: [
-      path.join(__INPUT__, 'slick.dataview.js')
-    ],
-    core: [
-      path.join(__INPUT__, 'slick.core.js')
-    ],
-    interact: [
-      path.join(__INPUT__, 'interact.js')
-    ]
+    slickgrid: [path.join(__INPUT__, 'index.js')],
+    '6pac': [path.join(__INPUT__, 'slick.grid.js')],
+    frozen: [path.join(__INPUT__, 'slick-frozen.grid.js')],
+    data: [path.join(__INPUT__, 'slick.dataview.js')],
+    core: [path.join(__INPUT__, 'slick.core.js')],
+    interact: [path.join(__INPUT__, 'interact.js')]
   },
 
   output: {
@@ -43,17 +30,20 @@ module.exports = {
   externals: [nodeExternals()],
 
   module: {
-    loaders: [{
-      test: /\.(js)$/,
-      exclude: /(node_modules)/,
-      loader: 'babel',
-      query: {
-        presets: ['latest']
+    loaders: [
+      {
+        test: /\.(js)$/,
+        exclude: /(node_modules)/,
+        loader: 'babel',
+        query: {
+          presets: ['latest']
+        }
+      },
+      {
+        test: /\.(scss)$/,
+        loader: 'style-loader!scss-loader'
       }
-    }, {
-      test: /\.(scss)$/,
-      loader: 'style-loader!scss-loader'
-    }]
+    ]
   },
 
   plugins: [
