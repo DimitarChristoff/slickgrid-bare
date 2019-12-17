@@ -1,7 +1,7 @@
 version: 2
 plan:
   project-key: ALPHAP
-  key: IACOMP
+  key: IASLICK
   name: Alpha_Slickgrid
 variables:
   revision: 'patch'
