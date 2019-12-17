@@ -24,8 +24,7 @@ npm run build && {
     git config --local user.name bamboo-ci
     git config --local user.email bamboo-ci@buildserver
     npm version $VER &&
-    git push origin master --tags
-    npm publish
+    npm publish && git push origin master --tags
 } || {
     echo "NPM run build failed" 1>&2
     exit 1
