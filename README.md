@@ -1,8 +1,7 @@
-# SlickGrid Bare
+# SlickGrid 
 
-[![npm version](https://img.shields.io/npm/v/slickgrid-bare.svg?style=flat-square)](https://www.npmjs.com/package/slickgrid-bare) [![npm downloads](https://img.shields.io/npm/dm/slickgrid-bare.svg?style=flat-square)](https://www.npmjs.com/package/slickgrid-bare) ![gzip size](http://img.badgesize.io/https://npmcdn.com/slickgrid-bare/dist/slickgrid.js?compression=gzip)
-
-This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6) 
+This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6). It has been customised to 
+support the needs of the IA Portal app alone and a portion of its styles lives in the @gin/ia-components repo.  
 
 It does not have any default plugins, editors, cell renderers that you normally find in other SlickGrid forks.
 It has no jQuery-UI (uses customised version of Interact.js instead).
@@ -12,8 +11,8 @@ It has no jQuery-UI (uses customised version of Interact.js instead).
 Simply (with jquery peer dep):
 
 ```shell script
-$ npm i slickgrid-bare jquery --save
-$ yarn add slickgrid-bare jquery
+$ npm i @gin/slickgrid jquery --save
+$ yarn add @gin/slickgrid jquery
 ```
 
 The peerDependency on jQuery is v2.2+ that you have to provide yourself (which is deemed insecure), works with that or v3+
@@ -21,7 +20,7 @@ The peerDependency on jQuery is v2.2+ that you have to provide yourself (which i
 ## Use (full bundle)
 
 ```js
-import {Data, Grid, Slick} from 'slickgrid-bare';
+import {Data, Grid, Slick} from '@gin/slickgrid';
 
 const data = new Data.DataView([{...}, {...}]);
 const columns = [{
@@ -69,17 +68,17 @@ grid.init();
 Optimised use for build sizes in module imports:
 
 ```js
-import Grid from 'slickgrid-bare/dist/6pac';
-import FrozenGrid from 'slickgrid-bare/dist/frozen';
-import Data from 'slickgrid-bare/dist/data';
-import Core from 'slickgrid-bare/dist/core';
+import Grid from '@gin/slickgrid/dist/6pac';
+import FrozenGrid from '@gin/slickgrid/dist/frozen';
+import Data from '@gin/slickgrid/dist/data';
+import Core from '@gin/slickgrid/dist/core';
 ```
 
 *WARNING:* This package does not come with a compiled CSS version, you get .SCSS export only. Ideally, copy the files locally and fix
 but some defaults are available.
 
 ```scss
-@import '~slickgrid-bare/dist/slick.grid.variables.scss';
+@import '~@gin/slickgrid/dist/slick.grid.variables.scss';
 
 $grid-border-color: #f2f2f2;
 $grid-border-style: solid;
@@ -94,6 +93,7 @@ $cell-padding-bottom: 9px;
 $cell-padding-right: 10px;
 $cell-padding-left: 10px;
 
-@import '~slickgrid-bare/dist/slick.grid.scss';
+// main
+@import '~@gin/slickgrid';
 // more here.
 ```
