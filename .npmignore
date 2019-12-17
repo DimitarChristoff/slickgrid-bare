@@ -1,5 +1,5 @@
-config/
-plugins/
-src/
 .idea/
-.github/
+src/
+bamboo-*
+.e*
+webpack*
