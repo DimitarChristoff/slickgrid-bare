@@ -1,6 +1,6 @@
 {
   "name": "@gin/slickgrid",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "description": "Non-tracking fork of X-SlickGrid with interact.js and jquery 3.4.1 as external. Barebones, don't use if you don't understand.",
   "main": "dist/slickgrid.js",
   "style": "dist/slick.grid.scss",
