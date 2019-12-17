@@ -1,7 +1,7 @@
-# SlickGrid 
+# SlickGrid
 
-This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6). It has been customised to 
-support the needs of the IA Portal app alone and a portion of its styles lives in the @gin/ia-components repo.  
+This is a stripped down version of [slickgrid-es6](https://github.com/DimitarChristoff/slickgrid-es6). It has been customised to
+support the needs of the IA Portal app alone and a portion of its styles lives in the @gin/ia-components repo.
 
 It does not have any default plugins, editors, cell renderers that you normally find in other SlickGrid forks.
 It has no jQuery-UI (uses customised version of Interact.js instead).
@@ -74,7 +74,7 @@ import Data from '@gin/slickgrid/dist/data';
 import Core from '@gin/slickgrid/dist/core';
 ```
 
-*WARNING:* This package does not come with a compiled CSS version, you get .SCSS export only. Ideally, copy the files locally and fix
+_WARNING:_ This package does not come with a compiled CSS version, you get .SCSS export only. Ideally, copy the files locally and fix
 but some defaults are available.
 
 ```scss
@@ -97,3 +97,27 @@ $cell-padding-left: 10px;
 @import '~@gin/slickgrid';
 // more here.
 ```
+
+# Changes compared to original forks
+
+The original slickgrid-es6 repo was created to drop jquery-ui as a dependency and to compile via normal modules and requires.
+Meanwhile, as the main slickgrid project is dead, there were two viable candidates for a repo to fork for the conversion -
+[6pac fork](https://github.com/6pac/SlickGrid/) and [X-SlickGrid](https://github.com/ddomingues/X-SlickGrid). They are both
+quite diverged and have gone into different directions.
+
+We had to do a bunch of changes and bug fixes, which meant we had to fork slickgrid-es6, and continue to
+support the 2 grids it exported. We reference them as 6pac (`import Grid from '@gin/slickgrid/dist/6pac';`) or Frozen
+(`import FrozenGrid from '@gin/slickgrid/dist/frozen';`), but also `import {Grid, GrozenGrid} from '@gin/slickgrid'` -
+the general gist is, 6pac has more features and bug fixes but does not support Frozen Rows / Columns. If you need a
+grid w/o frozen columns, I'd suggest importing the 6pac grid unless you already use the Frozen one and want to
+keep the build size smaller. Notably, the two implementations have slightly different styling options and also, sometimes
+different events coming through, with unwrapped DOM events vs jQuery - but are at least 95%+ compatible with each other
+over a relatively basic configuration.
+
+## Known Issues
+
+- The Interact.js dependency is built in now, because of a monkey patch on an originalEvent prop being passed on to
+  slickgrid, which was needed to replace jquery-ui and support drag reorder and column resize
+- There are issues with scrollbar size detection in Frozen, which may be something to patch as the 6pac SlickGrid does have a
+  method to detect scrollbar size. It may be a relatively trivial thing to do but since build target is mostly chrome and
+  scrollbar sizes is controlled via CSS, this was not required.
