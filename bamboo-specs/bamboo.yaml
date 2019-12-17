@@ -4,7 +4,7 @@ plan:
   key: IASLICK
   name: Alpha_Slickgrid
 variables:
-  version: 'patch'
+  revision: 'patch'
 stages:
   - Build Artifacts Stage:
       - Test and Build
