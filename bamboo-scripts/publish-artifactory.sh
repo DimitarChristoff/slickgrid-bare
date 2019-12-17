@@ -8,7 +8,7 @@ node --version
 npm --version
 npm ci
 npm run build && {
-    VER=${bamboo_revision:-patch}
+    VER=${bamboo_version:-patch}
     git clone "${bamboo_planRepository_repositoryUrl}" temp
     rm -Rf .git/objects
     mv ./temp/.git/objects .git/objects
