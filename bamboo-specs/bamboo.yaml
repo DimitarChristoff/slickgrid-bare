@@ -9,6 +9,7 @@ stages:
   - Build Artifacts Stage:
       - Test and Build
   - Publish Stage:
+      manual: true
       jobs:
         - Publish NPM
 
